@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Move : MonoBehaviour {
+public class Move : MonoBehaviour
+{
 
 	GameObject m_pCase0;
 	GameObject m_pCase1;
@@ -18,24 +19,30 @@ public class Move : MonoBehaviour {
 
 	public float m_fFurySpeed = 100f;
 
-	void Awake()
+	public float threshold = 1.0f;
+	public MicroInput micIn;
+	public Move _moveScript;
+
+	void Awake ()
 	{
 		SetPointers ();
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 	
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 	
 		ComputeInputs ();
 		//Debug.Log (GetActualPos ());
 	}
 
-	void SetPointers()
+	void SetPointers ()
 	{
 		m_pCase0 = GameObject.Find ("Case 0");
 		m_pCase1 = GameObject.Find ("Case 1");
@@ -45,7 +52,7 @@ public class Move : MonoBehaviour {
 		m_pCam = Camera.main;
 	}
 
-	void ComputeInputs()
+	void ComputeInputs ()
 	{
 		if (Input.GetKeyDown (KeyCode.F)) {
 		
@@ -57,16 +64,16 @@ public class Move : MonoBehaviour {
 		if (!GetIsInFury ()) {
 		
 			//LEFT OR RIGHT
-			if (Input.GetKey (KeyCode.A)) {
+			if (Input.GetKey (KeyCode.LeftArrow)) {
 				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase1.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fTurningSpeed);
 				Debug.Log ("FarLeft");
-			} else if (Input.GetKey (KeyCode.Z)) {
+			} else if (Input.GetKey (KeyCode.UpArrow)) {
 				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase2.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fTurningSpeed);
 				Debug.Log ("Left");
-			} else if (Input.GetKey (KeyCode.E)) {
+			} else if (Input.GetKey (KeyCode.DownArrow)) {
 				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase3.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fTurningSpeed);
 				Debug.Log ("Right");
-			} else if (Input.GetKey (KeyCode.R)) {
+			} else if (Input.GetKey (KeyCode.RightArrow)) {
 				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase4.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fTurningSpeed);
 				Debug.Log ("FarRight");
 			} else {
@@ -80,23 +87,29 @@ public class Move : MonoBehaviour {
 				GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fForwardImpulseForce, ForceMode.Impulse);
 				m_pCam.GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fForwardImpulseForce, ForceMode.Impulse);
 			}
+
+			float _l = micIn.loudness;
+			if (_l > threshold) {
+				GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fForwardImpulseForce, ForceMode.Impulse);
+				m_pCam.GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fForwardImpulseForce, ForceMode.Impulse);
+			}
 		} else if (GetIsInFury ()) {
 		
 			//LEFT OR RIGHT
-			if (Input.GetKey (KeyCode.A)) {
-				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase1.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed/2f);
+			if (Input.GetKey (KeyCode.LeftArrow)) {
+				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase1.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed / 2f);
 				Debug.Log ("FarLeft");
-			} else if (Input.GetKey (KeyCode.Z)) {
-				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase2.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed/2f);
+			} else if (Input.GetKey (KeyCode.UpArrow)) {
+				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase2.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed / 2f);
 				Debug.Log ("Left");
-			} else if (Input.GetKey (KeyCode.E)) {
-				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase3.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed/2f);
+			} else if (Input.GetKey (KeyCode.DownArrow)) {
+				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase3.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed / 2f);
 				Debug.Log ("Right");
-			} else if (Input.GetKey (KeyCode.R)) {
-				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase4.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed/2f);
+			} else if (Input.GetKey (KeyCode.RightArrow)) {
+				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase4.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed / 2f);
 				Debug.Log ("FarRight");
 			} else {
-				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase0.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed/2f);
+				transform.position = Vector3.Lerp (GetActualPos (), new Vector3 (m_pCase0.transform.position.x, GetActualPos ().y, GetActualPos ().z), Time.deltaTime * m_fFurySpeed / 2f);
 				Debug.Log ("Center");
 			}
 
@@ -106,27 +119,32 @@ public class Move : MonoBehaviour {
 				GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fFurySpeed, ForceMode.Impulse);
 				m_pCam.GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fFurySpeed, ForceMode.Impulse);
 			}
+			float _l = micIn.loudness;
+			if (_l > threshold) {
+				GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fFurySpeed, ForceMode.Impulse);
+				m_pCam.GetComponent<Rigidbody> ().AddForce (Vector3.forward * Time.deltaTime * m_fFurySpeed, ForceMode.Impulse);
+			}
 		}
 
 	}
 
-	public bool GetIsInFury()
+	public bool GetIsInFury ()
 	{
 		return m_bIsInFury;
 	}
 
-	public void ToggleIsInFury()
+	public void ToggleIsInFury ()
 	{
 		m_bIsInFury = !m_bIsInFury;
 	}
 
-	public Vector3 GetActualPos()
+	public Vector3 GetActualPos ()
 	{
 		Vector3 vPos = this.gameObject.transform.position;
 		return vPos;
 	}
 
-	void OnCollisionEnter(Collision col)
+	void OnCollisionEnter (Collision col)
 	{
 
 		if (col.gameObject.tag == "Obstacle") {
@@ -138,7 +156,7 @@ public class Move : MonoBehaviour {
 
 	}
 
-	IEnumerator RespawnAfterHit()
+	IEnumerator RespawnAfterHit ()
 	{
 		Debug.Log ("Hit !");
 		GetComponent<Collider> ().enabled = false;
@@ -150,22 +168,22 @@ public class Move : MonoBehaviour {
 		m_pCam.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 	
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 0.2f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 1f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 0.2f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 1f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 0.2f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 1f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 0.2f);
-		yield return new WaitForSeconds(0.25f);
+		yield return new WaitForSeconds (0.25f);
 		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 1f);
-		yield return new WaitForSeconds(0.25f);
-		GetComponent<Renderer> ().material.color =  new Color (1, 0, 0, 1f);
+		yield return new WaitForSeconds (0.25f);
+		GetComponent<Renderer> ().material.color = new Color (1, 0, 0, 1f);
 		GetComponent<Collider> ().enabled = true;
 	}
 }
