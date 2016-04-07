@@ -8,6 +8,8 @@ public class MicroInput : MonoBehaviour
 	public float loudness = 0.0f;
 	public float frequency = 0.0f;
 	public int samplerate = 11024;
+
+	public AudioClip _myAudioClip;
 	// Use this for initialization
 	void Start ()
 	{
@@ -16,11 +18,14 @@ public class MicroInput : MonoBehaviour
 			Debug.Log ("Name: " + device);
 		}
 
+		//_myAudioClip = Microphone.Start (Microphone.devices [0], true, 1, samplerate);
 		GetComponent<AudioSource> ().clip = Microphone.Start (Microphone.devices [0], true, 1, samplerate);
 		GetComponent<AudioSource> ().loop = true; // Set the AudioClip to loop
 		GetComponent<AudioSource> ().mute = false; // Mute the sound, we don't want the player to hear it
 
 		GetComponent<AudioSource> ().Play (); // Play the audio source!
+
+		_myAudioClip = GetComponent<AudioSource> ().clip;
 	}
 
 	void Update ()
